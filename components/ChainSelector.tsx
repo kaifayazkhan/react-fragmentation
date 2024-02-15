@@ -21,7 +21,13 @@ const ChainSelectorComponent: React.FC<ChainSelectorProps> = (
 
     return (
         <div>
+            {/*fake p tags*/}
             <p>{title}</p>
+            <p>{openChainSelector}</p>
+            <p>{setOpenChainSelector}</p>
+            <p>{chains}</p>
+            <p>{selectedChain}</p>
+            <p>{setSelectedChain}</p>
         </div>
     );
 };
