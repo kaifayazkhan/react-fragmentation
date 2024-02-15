@@ -3,7 +3,7 @@ interface BurnTxTableProps {
     priceUSD: number | undefined;
 }
 
-// Dummy filler code
+// Fake filler code
 const BurnTxTable: React.FC<BurnTxTableProps> = ({ data, priceUSD }) => {
     return (
         <table className="burn-tx-table">

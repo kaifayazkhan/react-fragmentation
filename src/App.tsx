@@ -36,6 +36,8 @@
 
 
 import TransactionTable from "../components/TransactionTableStyled.tsx";
+import ChainSelectorComponent from "../components/ChainSelector.tsx";
+import AppToast from "../ui/AppToast.tsx";
 
 const BurnPageStyled = styled.div``;
 
@@ -373,7 +375,7 @@ const App = () => {
 
             <TransactionTable burnTransactions={burnTransactions} coinData={coinData} />
 
-            <ChainSelector
+            <ChainSelectorComponent
                 title={"Switch Token Chain"}
                 openChainSelector={openChainSelector}
                 setOpenChainSelector={setOpenChainSelector}
@@ -382,7 +384,7 @@ const App = () => {
                 setSelectedChain={setSuppliesChain}
             />
             <AppToast
-                position={{vertical: "bottom", horizontal: "center"}}
+                position={{ vertical: 'bottom', horizontal: 'center' }}
                 message={toastMsg}
                 severity={toastSev}
             />
