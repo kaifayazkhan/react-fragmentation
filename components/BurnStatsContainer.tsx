@@ -1,4 +1,7 @@
 import React from 'react';
+import AppChip from "../ui/AppChip.tsx";
+import AppIcon from "../ui/AppIcon.tsx";
+import AppExtLink from "../ui/AppExtLink.tsx";
 
 interface BurnStatsContainerProps {
     walletChain: any;
@@ -55,7 +58,7 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                         margin: "0 0 0 -0.8rem",
                     }}
                     fill={IconFilter.primary}
-                />
+                 />
                 <span
                     className="line orange"
                     style={{width: `${100 - statsSupplies.circulatingPercent}%`}}
