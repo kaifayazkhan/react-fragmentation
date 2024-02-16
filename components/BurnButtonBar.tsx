@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from 'react';
 import Button from '../ui/Button.tsx';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '../ui/CircularProgress';
 import AppIcon from '../ui/AppIcon.tsx';
-import AppTooltip from '../ui/AppTooltip.tsx';
 import AppExtLink from '../ui/AppExtLink.tsx';
+import AppTooltip from "../ui/AppTooltip";
 
 interface BurnButtonBarProps {
     burnAmount: string;
