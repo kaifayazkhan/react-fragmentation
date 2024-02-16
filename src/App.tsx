@@ -1,52 +1,32 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-//
-// function App() {
-//   const [count, setCount] = useState(0)
-//
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vitejs.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-//
-// export default App
-
-
+import { useState, useEffect, ChangeEvent } from "react";
+import styled from "styled-components";
 import TransactionTable from "../components/TransactionTableStyled.tsx";
 import ChainSelectorComponent from "../components/ChainSelector.tsx";
 import AppToast from "../ui/AppToast.tsx";
 import BurnStatsContainer from "../components/BurnStatsContainer.tsx";
 import BurnButtonBar from "../components/BurnButtonBar.tsx";
+import useWallet from "./hooks/useWallet.tsx";
+import useChainSelector from "./hooks/useChainSelector.tsx";
+import useAppSupplies from "./hooks/useAppSupplies.tsx";
+import useAppToast from "./hooks/useAppToast.tsx";
+import useEthersSigner from "./hooks/useEthersSigner.tsx";
+import { fetchAddressForChain } from "./utils/apiUtils.ts";
 
-const BurnPageStyled = styled.div``;
+const DashboardLayoutStyled = styled.div``;
 
 enum BurnTxProgress {
     default = "Burn App Tokens",
     burning = "Burning...",
 }
+
+const chainEnum = {
+    mainnet: 1,
+    avalanche: 43114,
+    fantom: 250,
+    sepolia: 1,
+    avalancheFuji: 1,
+    fantomTestnet: 1,
+};
 
 const App = () => {
     const {
@@ -59,8 +39,13 @@ const App = () => {
         chains,
         openConnectModal,
     } = useWallet();
-    const {openChainSelector, setOpenChainSelector, openChainSelectorModal} = useChainSelector();
-    const {chains: receiveChains} = useWallet();
+
+    const {
+        openChainSelector,
+        setOpenChainSelector,
+        openChainSelectorModal,
+    } = useChainSelector();
+    const { chains: receiveChains } = useWallet();
     const {
         supplies,
         allSupplies,
@@ -68,10 +53,12 @@ const App = () => {
         suppliesChain,
         fetchSupplies,
     } = useAppSupplies(true);
+
     const [burnTransactions, setBurnTransactions] = useState<any[]>([]);
     const [isOldToken, setIsOldToken] = useState(false);
     const [burnAmount, setBurnAmount] = useState("");
-    const {toastMsg, toastSev, showToast} = useAppToast();
+    const { toastMsg, toastSev, showToast } = useAppToast();
+
     const ethersSigner = useEthersSigner({
         chainId: walletChain?.id ?? chainEnum.mainnet,
     });
@@ -89,10 +76,18 @@ const App = () => {
     );
 
     const [coinData, setCoinData] = useState<any>({});
+
+    const CoinGeckoApi = {
+        fetchCoinData: async () => {
+            const response = await fetch(
+                `BASE_URL/coins/ethereum/contract/${tokenAddress}`
+            );
+            return response.json();
+        },
+    };
     useEffect(() => {
         CoinGeckoApi.fetchCoinData()
             .then((data: any) => {
-                //console.log("coin stats", data);
                 setCoinData(data?.market_data);
             })
             .catch((err) => {
@@ -101,7 +96,7 @@ const App = () => {
     }, []);
 
     const onChangeBurnAmount = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value == "") setBurnAmount("");
+        if (e.target.value === "") setBurnAmount("");
         if (isNaN(parseFloat(e.target.value))) return;
         setBurnAmount(e.target.value);
     };
@@ -111,7 +106,6 @@ const App = () => {
             ChainScanner.fetchAllTxPromises(isChainTestnet(walletChain?.id))
         )
             .then((results: any) => {
-                //console.log(res);
                 let res = results.flat();
                 res = ChainScanner.sortOnlyBurnTransactions(res);
                 res = res.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
@@ -141,10 +135,7 @@ const App = () => {
         setTxButton(BurnTxProgress.burning);
         setTxProgress(true);
         try {
-            const burnTx = await oftTokenContract.burn(
-                //tokenAddress,
-                amount
-            );
+            const burnTx = await oftTokenContract.burn(amount);
             setBurnTxHash(burnTx.hash);
             console.log(burnTx, burnTx.hash);
             await burnTx.wait();
@@ -163,19 +154,13 @@ const App = () => {
 
     useEffect(() => {
         if (!walletChain) return;
-        //console.log(suppliesChain);
         let isSubscribed = true;
-        // const newTokenAddress = fetchAddressForChain(
-        //   walletChain?.id,
-        //   isOldToken ? "oldToken" : "newToken"
-        // );
         if (isSubscribed) setBurnTransactions([]);
         const isTestnet = isChainTestnet(walletChain?.id);
         let _chainObjects: any[] = [mainnet, avalanche, fantom];
         if (isTestnet) _chainObjects = [sepolia, avalancheFuji, fantomTestnet];
         Promise.all(ChainScanner.fetchAllTxPromises(isTestnet))
             .then((results: any) => {
-                //console.log(results, isTestnet);
                 if (isSubscribed) {
                     let new_chain_results: any[] = [];
                     results.forEach((results_a: any[], index: number) => {
@@ -187,7 +172,6 @@ const App = () => {
                         );
                     });
                     let res = new_chain_results.flat();
-                    console.log(res, isTestnet);
                     res = ChainScanner.sortOnlyBurnTransactions(res);
                     res = res.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
                     setBurnTransactions(res);
@@ -206,14 +190,13 @@ const App = () => {
             <DashboardLayoutStyled className="burnpage">
                 <div
                     className="top_conatiner burnpage"
-                    style={{alignItems: "flex-start"}}
+                    style={{ alignItems: "flex-start" }}
                 >
                     <div className="info_box filled">
                         <h1 className="title">App TOKEN BURN</h1>
                         <p className="description medium"></p>
 
-                        <BurnButtonBar/>
-
+                        <BurnButtonBar />
                     </div>
 
                     <BurnStatsContainer
@@ -221,9 +204,8 @@ const App = () => {
                         suppliesChain={suppliesChain}
                         statsSupplies={statsSupplies}
                         allSupplies={allSupplies}
-                        chainTokenSymbols={chainTokenSymbols}
+                        chainTokenSymbols={"APP"}
                     />
-
                 </div>
             </DashboardLayoutStyled>
 
@@ -238,7 +220,7 @@ const App = () => {
                 setSelectedChain={setSuppliesChain}
             />
             <AppToast
-                position={{ vertical: 'bottom', horizontal: 'center' }}
+                position={{ vertical: "bottom", horizontal: "center" }}
                 message={toastMsg}
                 severity={toastSev}
             />

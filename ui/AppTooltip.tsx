@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from "styled-components";
 
 
@@ -7,8 +6,13 @@ const Tooltip = styled.div`
 // styles for Tooltip
 `;
 
+interface PropTypes {
+    title: string,
+    children: React.ReactNode
+}
 
-const AppTooltip = ({ title, children }) => {
+
+const AppTooltip = ({ title, children }: PropTypes) => {
     return (
         <Tooltip title={title}>
             {children}
@@ -16,9 +20,5 @@ const AppTooltip = ({ title, children }) => {
     );
 };
 
-AppTooltip.propTypes = {
-    title: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
-};
 
 export default AppTooltip;

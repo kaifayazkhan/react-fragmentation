@@ -21,7 +21,7 @@ const BurnButtonBarComponent: React.FC<BurnButtonBarProps> = (
     {
         burnAmount,
         txProgress,
-        txButton,
+        txButton = "Submit",
         burnTxHash,
         onChangeBurnAmount,
         executeBurn,
@@ -55,7 +55,7 @@ const BurnButtonBarComponent: React.FC<BurnButtonBarProps> = (
                         txProgress ? (
                             <CircularProgress size={20} color="inherit" />
                         ) : (
-                            <AppIcon url="/icons/fire.svg" fill={IconFilter.primary} size={1.5} margin={0} />
+                            <AppIcon url="/icons/fire.svg" fill={""} size={1.5} margin={0} />
                         )
                     }
                 >

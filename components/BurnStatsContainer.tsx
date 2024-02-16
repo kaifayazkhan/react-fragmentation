@@ -11,6 +11,12 @@ interface BurnStatsContainerProps {
     chainTokenSymbols: Map<string, string>;
 }
 
+const numberWithCommas = (num: number) => {
+    // function body
+    return num;
+
+}
+
 const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
     {
         walletChain,
@@ -27,18 +33,18 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                     url="/images/token/App_new.svg"
                     size={2}
                     margin={0}
-                    fill={IconFilter.unset}
+                    fill={""}
                 />
                 <p className="label">App SUPPLY</p>
                 <AppChip
-                    onClick={openChainModal}
+                    onClick={() => { }}
                     title={walletChain?.name || "---"}
                     endIcon={"/icons/expand_more.svg"}
                     startIcon={`/images/token/${walletChain?.nativeCurrency?.symbol}.svg`}
                 ></AppChip>
                 <AppExtLink
                     className=" supply_label"
-                    url={`${suppliesChain?.blockExplorers?.default?.url}/address/${tokenAddress}`}
+                    url={`${suppliesChain?.blockExplorers?.default?.url}/address/${"ldlks"}`}
                 >
                     View Contract
                 </AppExtLink>
@@ -49,7 +55,7 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                     url="/icons/fire.svg"
                     size={1.15}
                     margin={0}
-                    fill={IconFilter.primary}
+                    fill={""}
                 />
                 <AppIcon
                     url="/icons/double_arrow.svg"
@@ -57,15 +63,15 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                     style={{
                         margin: "0 0 0 -0.8rem",
                     }}
-                    fill={IconFilter.primary}
-                 />
+                    fill={""}
+                />
                 <span
                     className="line orange"
-                    style={{width: `${100 - statsSupplies.circulatingPercent}%`}}
+                    style={{ width: `${100 - statsSupplies.circulatingPercent}%` }}
                 ></span>
                 <span
                     className="line green"
-                    style={{width: `${statsSupplies.circulatingPercent}%`}}
+                    style={{ width: `${statsSupplies.circulatingPercent}%` }}
                 ></span>
             </div>
 
@@ -75,14 +81,14 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                         <span className="hyphen orange"></span>
                         <span className="text">Burnt App Tokens</span>
                         <span className="percent orange">
-                    {(100 - statsSupplies.circulatingPercent).toFixed(2)}%
-                  </span>
+                            {(100 - statsSupplies.circulatingPercent).toFixed(2)}%
+                        </span>
                     </p>
                     <p className="supply_value">
                         <AppIcon
                             size={1.25}
                             url={`/images/token/${walletChain?.nativeCurrency?.symbol}.svg`}
-                            fill={IconFilter.unset}
+                            fill={""}
                             margin={0}
                         />
                         {numberWithCommas(
@@ -99,14 +105,14 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                         <span className="hyphen green"></span>
                         <span className="text">Circulating App Tokens</span>
                         <span className="percent green">
-                    {statsSupplies.circulatingPercent.toFixed(2)}%
-                  </span>
+                            {/* {statsSupplies.circulatingPercent.toFixed(2)}% */}
+                        </span>
                     </p>
                     <p className="supply_value">
                         <AppIcon
                             size={1.25}
                             url={`/images/token/${walletChain?.nativeCurrency?.symbol}.svg`}
-                            fill={IconFilter.unset}
+                            fill={""}
                             margin={0}
                         />
                         {numberWithCommas(statsSupplies.circulatingSupply)}
@@ -117,10 +123,9 @@ const BurnStatsContainerComponent: React.FC<BurnStatsContainerProps> = (
                             <p key={s.chainId} className="supply_value mini">
                                 <AppIcon
                                     size={1.25}
-                                    url={`/images/token/${
-                                        chainTokenSymbols.get(s.chainId) ?? "ETH"
-                                    }.svg`}
-                                    fill={IconFilter.unset}
+                                    url={`/images/token/${chainTokenSymbols.get(s.chainId) ?? "ETH"
+                                        }.svg`}
+                                    fill={""}
                                     margin={0}
                                 />
                                 {numberWithCommas(s.circulatingSupply)}
